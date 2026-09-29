@@ -1,0 +1,51 @@
+{
+	"name": "@cart-agent/harness",
+	"version": "0.1.0",
+	"private": true,
+	"description": "The assistant: profiler, candidate search, cart building, composer. No database",
+	"author": "Nikita MRCS",
+	"license": "MIT",
+	"scripts": {
+		"build": "nest build",
+		"predev": "lsof -ti tcp:3002 -sTCP:LISTEN | xargs kill -9 2>/dev/null; true",
+		"dev": "nest start --watch",
+		"start:prod": "node dist/main",
+		"test": "jest --runInBand"
+	},
+	"dependencies": {
+		"@cart-agent/contracts": "*",
+		"@nestjs/common": "^11.1.0",
+		"@nestjs/config": "^4.0.4",
+		"@nestjs/core": "^11.1.0",
+		"@nestjs/platform-express": "^11.1.0",
+		"reflect-metadata": "^0.2.2",
+		"rxjs": "^7.8.2",
+		"zod": "^3.25.76"
+	},
+	"devDependencies": {
+		"@nestjs/cli": "^11.0.24",
+		"@nestjs/schematics": "^11.1.0",
+		"@nestjs/testing": "^11.1.0",
+		"@types/express": "^5.0.6",
+		"@types/jest": "^30.0.0",
+		"@types/node": "^24.0.0",
+		"jest": "^30.5.2",
+		"ts-jest": "^29.4.13"
+	},
+	"jest": {
+		"rootDir": ".",
+		"testEnvironment": "node",
+		"testMatch": [
+			"<rootDir>/test/**/*.spec.ts",
+			"<rootDir>/src/**/*.spec.ts"
+		],
+		"transform": {
+			"^.+\\.ts$": [
+				"ts-jest",
+				{
+					"tsconfig": "tsconfig.json"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"name": "cart-agent",
+	"version": "0.1.0",
+	"private": true,
+	"description": "An online store whose chat assistant builds a cart for the buyer's task within the buyer's budget",
+	"author": "Nikita MRCS",
+	"license": "MIT",
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
+	"scripts": {
+		"build": "npm run build --workspaces --if-present",
+		"dev": "concurrently -n contracts,backend,harness,frontend -c gray,blue,yellow,magenta \"npm run dev -w @cart-agent/contracts\" \"npm run dev -w @cart-agent/backend\" \"npm run dev -w @cart-agent/harness\" \"npm run dev -w @cart-agent/frontend\"",
+		"db:up": "docker compose up -d postgres",
+		"db:setup": "npm run db:setup -w @cart-agent/backend",
+		"db:reset": "npm run db:reset -w @cart-agent/backend",
+		"bench": "tsx bench/src/run.ts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml,css,html}\"",
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml,css,html}\""
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.39.5",
+		"concurrently": "^9.2.4",
+		"eslint": "^9.39.5",
+		"eslint-config-prettier": "^9.1.2",
+		"eslint-plugin-react-hooks": "^5.2.0",
+		"eslint-plugin-react-refresh": "^0.4.20",
+		"prettier": "^3.9.6",
+		"tsx": "^4.23.13",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.70.0"
+	},
+	"allowScripts": {
+		"prisma": true,
+		"@prisma/engines": true,
+		"esbuild": true,
+		"@parcel/watcher": false,
+		"unrs-resolver": false,
+		"fsevents": false
+	}
+}

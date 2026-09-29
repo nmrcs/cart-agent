@@ -1,0 +1,60 @@
+{
+	"name": "@cart-agent/backend",
+	"version": "0.1.0",
+	"private": true,
+	"description": "NestJS API: catalog and cart. Owns every price and every total",
+	"author": "Nikita MRCS",
+	"license": "MIT",
+	"scripts": {
+		"prebuild": "prisma generate",
+		"build": "nest build",
+		"predev": "prisma generate; lsof -ti tcp:3001 -sTCP:LISTEN | xargs kill -9 2>/dev/null; true",
+		"dev": "nest start --watch",
+		"start:prod": "node dist/main",
+		"db:reset": "prisma generate && prisma migrate reset --force && prisma db seed",
+		"test": "jest --runInBand",
+		"db:setup": "prisma generate && prisma migrate deploy && prisma db seed"
+	},
+	"dependencies": {
+		"@cart-agent/contracts": "*",
+		"@nestjs/common": "^11.1.0",
+		"@nestjs/config": "^4.0.4",
+		"@nestjs/core": "^11.1.0",
+		"@nestjs/platform-express": "^11.1.0",
+		"@prisma/adapter-pg": "^7.10.0",
+		"@prisma/client": "^7.10.0",
+		"reflect-metadata": "^0.2.2",
+		"rxjs": "^7.8.2",
+		"zod": "^3.25.76"
+	},
+	"devDependencies": {
+		"@nestjs/cli": "^11.0.24",
+		"@nestjs/schematics": "^11.1.0",
+		"@nestjs/testing": "^11.1.0",
+		"@types/express": "^5.0.6",
+		"@types/jest": "^30.0.0",
+		"@types/node": "^24.0.0",
+		"jest": "^30.5.2",
+		"ts-jest": "^29.4.13",
+		"@types/pg": "^8.23.1",
+		"dotenv": "^17.2.3",
+		"pg": "^8.23.0",
+		"prisma": "^7.10.0"
+	},
+	"jest": {
+		"rootDir": ".",
+		"testEnvironment": "node",
+		"testMatch": [
+			"<rootDir>/test/**/*.spec.ts",
+			"<rootDir>/src/**/*.spec.ts"
+		],
+		"transform": {
+			"^.+\\.ts$": [
+				"ts-jest",
+				{
+					"tsconfig": "tsconfig.json"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,91 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id       String    @id @default(uuid()) @db.Uuid
+  slug     String    @unique
+  name     String
+  // Menu order.
+  position Int
+  // Batteries, film, wrapping: sold here, but not gifts, so "All gifts" and
+  // the assistant's candidate search leave them out.
+  isSupply Boolean   @default(false)
+  products Product[]
+}
+
+model Tag {
+  id       String    @id @default(uuid()) @db.Uuid
+  slug     String    @unique
+  name     String
+  products Product[]
+}
+
+model Product {
+  id           String         @id @default(uuid()) @db.Uuid
+  slug         String         @unique
+  name         String
+  description  String
+  // Smallest currency unit. The whole store runs in one currency (USD).
+  priceCents   Int
+  stock        Int
+  // Recommended age in years, inclusive; null means no bound.
+  ageMin       Int?
+  ageMax       Int?
+  // Working days from order to door.
+  deliveryDays Int
+  categoryId   String         @db.Uuid
+  category     Category       @relation(fields: [categoryId], references: [id])
+  tags         Tag[]
+  images       ProductImage[]
+  // What the product does not work without and does not include: batteries,
+  // film. The harness never puts these in a cart on its own.
+  requires     Product[]      @relation("Requires")
+  requiredBy   Product[]      @relation("Requires")
+  cartItems    CartItem[]
+
+  @@index([categoryId])
+}
+
+model ProductImage {
+  id        String  @id @default(uuid()) @db.Uuid
+  productId String  @db.Uuid
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  // Also the brief for the real photo that replaces the placeholder.
+  alt       String
+  // 0 is the main square image; the rest are the thumbnails under it.
+  position  Int
+
+  @@unique([productId, position])
+}
+
+// Only ids and quantities are stored. Prices and totals are read from Product
+// on every request, so a cart never carries a price someone else wrote.
+model Cart {
+  id         String     @id @default(uuid()) @db.Uuid
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  /// The recipient's birthday, set when the assistant puts a birthday gift in
+  /// the cart. The birthday discount is computed from it on every view.
+  birthdayOn DateTime?  @db.Date
+  items      CartItem[]
+}
+
+model CartItem {
+  cartId    String   @db.Uuid
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String   @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  // Keeps the lines in the order the buyer added them.
+  addedAt   DateTime @default(now())
+
+  @@id([cartId, productId])
+}
